@@ -40,33 +40,30 @@ void Referential::refNormalize()
 }
 
 
-void Referential::locToGlobPos(const Referential& local, vec3& pt)
+vec3 Referential::locToGlobPos(const vec3& pt)
 {
-    pt = local.origin + (local.i * pt.x) + (local.j * pt.y) + (local.k * pt.z);
+    return origin + (i * pt.x) + (j * pt.y) + (k * pt.z);
 }
 
-void Referential::globToLocPos(const Referential& local, vec3& pt)
+vec3 Referential::globToLocPos(const vec3& pt)
 {
-    vec3 OP = pt - local.origin;
-
-    pt.x = dotProduct(OP, local.i);
-    pt.y = dotProduct(OP, local.j);
-    pt.z = dotProduct(OP, local.k);
+    return {
+        dotProduct(pt - origin, i),
+        dotProduct(pt - origin, j),
+        dotProduct(pt - origin, k)
+    };
 }
 
-void Referential::locToGlobVect(const Referential& local, vec3& vect)
+vec3 Referential::locToGlobVect(const vec3& vect)
 {
-    vec3 OP = (local.i * vect.x) + (local.j * vect.y) + (local.k * vect.z);
-    vect = OP;
+    return (i * vect.x) + (j * vect.y) + (k * vect.z);
 }
 
-void Referential::globToLocVect(const Referential& local, vec3& vect)
+vec3 Referential::globToLocVect(const vec3& vect)
 {
-    vec3 tmpVect = vect;
-
-    vect = {
-        dotProduct(tmpVect, local.i),
-        dotProduct(tmpVect, local.j),
-        dotProduct(tmpVect, local.k)
+    return {
+        dotProduct(vect, i),
+        dotProduct(vect, j),
+        dotProduct(vect, k)
     };
 }

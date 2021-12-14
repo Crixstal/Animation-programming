@@ -18,9 +18,9 @@ struct Referential
 
     void refNormalize();
 
-    void locToGlobPos(const Referential& local, vec3& pt);
-    void globToLocPos(const Referential& local, vec3& pt);
+    vec3 locToGlobPos(const vec3& pt);
+    vec3 globToLocPos(const vec3& pt);
 
-    void locToGlobVect(const Referential& local, vec3& vect);
-    void globToLocVect(const Referential& local, vec3& vect);
+    vec3 locToGlobVect(const vec3& vect);
+    vec3 globToLocVect(const vec3& vect);
 };

@@ -11,6 +11,7 @@
 #include <tchar.h>
 
 #include "Skeleton.h"
+#include "Definitions.h"
 
 
 // TODO: reference additional headers your program requires here

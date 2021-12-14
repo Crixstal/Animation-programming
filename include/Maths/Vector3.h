@@ -182,9 +182,9 @@ inline vec3 rotateByQuat(const vec3& v, const quat& q)
 {
 	vec3 result = { 0 };
 
-	result.x = v.x * (q.x * q.x + q.w * q.w - q.y * q.y - q.z * q.z) + v.y * (2 * q.x * q.y - 2 * q.w * q.z) + v.z * (2 * q.x * q.z + 2 * q.w * q.y);
-	result.y = v.x * (2 * q.w * q.z + 2 * q.x * q.y) + v.y * (q.w * q.w - q.x * q.x + q.y * q.y - q.z * q.z) + v.z * (-2 * q.w * q.x + 2 * q.y * q.z);
-	result.z = v.x * (-2 * q.w * q.y + 2 * q.x * q.z) + v.y * (2 * q.w * q.x + 2 * q.y * q.z) + v.z * (q.w * q.w - q.x * q.x - q.y * q.y + q.z * q.z);
+	result.x = v.x * (q.w * q.w + q.x * q.x - q.y * q.y - q.z * q.z)	+ v.y * (2 * (q.x * q.y) - 2 * (q.w * q.z))					+ v.z * (2 * (q.x * q.z) + 2 * (q.w * q.y));
+	result.y = v.x * (2 * (q.x * q.y) + 2 * (q.w * q.z))				+ v.y * (q.w * q.w + q.y * q.y - q.x * q.x - q.z * q.z)		+ v.z * (2 * (q.y * q.z) - 2 * (q.w * q.x));
+	result.z = v.x * (2 * (q.x * q.z) - 2 * (q.w * q.y))				+ v.y * (2 * (q.y * q.z) + 2 * (q.w * q.x))					+ v.z * (q.w * q.w + q.z * q.z - q.x * q.x - q.y * q.y);
 
 	return result;
 }
