@@ -10,7 +10,8 @@ public:
 
 	virtual void Init() {}
 	virtual void Update( float frameTime ){}
-};
 
+	Skeleton* skel = nullptr;
+};
 
 #endif

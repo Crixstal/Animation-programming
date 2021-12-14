@@ -1,6 +1,7 @@
 // AnimationProgramming.cpp : Defines the entry point for the console application.
 //
 
+#include <iostream>
 #include "stdafx.h"
 
 #include "Engine.h"
@@ -21,6 +22,9 @@ class CSimulation : public ISimulation
 		printf("Spine parent bone : %s\n", spineParentName);
 		printf("Anim key count : %ld\n", keyCount);
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
+	
+		skel = new Skeleton();
+		skel->Set();
 	}
 
 	virtual void Update(float frameTime) override
@@ -32,8 +36,10 @@ class CSimulation : public ISimulation
 		DrawLine(0, 0, 0, 0, 100, 0, 0, 1, 0);
 
 		// Z axis
-		DrawLine(0, 0, 0, 0, 0, 100, 0, 0, 1);
+		DrawLine(0, 0, 0, 0, 0, 100, 10, 0, 1);
 
+		// Skeleton
+		skel->Draw();
 	}
 };
 

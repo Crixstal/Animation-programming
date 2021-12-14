@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <tchar.h>
 
+#include "Skeleton.h"
 
 
 // TODO: reference additional headers your program requires here
