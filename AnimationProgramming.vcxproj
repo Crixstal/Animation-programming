@@ -20,11 +20,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AnimationProgramming.cpp" />
+    <ClCompile Include="source\Referential.cpp" />
     <ClCompile Include="source\Skeleton.cpp" />
     <ClCompile Include="source\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Engine.h" />
+    <ClInclude Include="include\Maths\Definitions.h" />
+    <ClInclude Include="include\Maths\Mat4.h" />
+    <ClInclude Include="include\Maths\Quaternion.h" />
+    <ClInclude Include="include\Maths\Referential.h" />
+    <ClInclude Include="include\Maths\Vector3.h" />
     <ClInclude Include="include\Simulation.h" />
     <ClInclude Include="include\Skeleton.h" />
     <ClInclude Include="include\stdafx.h" />
@@ -83,7 +89,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include;$(ProjectDir)include\Maths;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Data;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)source;$(SourcePath)</SourcePath>
   </PropertyGroup>
