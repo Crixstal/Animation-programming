@@ -15,7 +15,7 @@ public:
 	vec3 locToGlobBone(const std::vector<Bone>& bones, vec3 position, int deep);
 
 	vec3 getVec() const { return vec3(pos[0], pos[1], pos[2]); };
-	quat getQuat() const { return quat(quater[3], quater[0], quater[1], quater[2]); };
+	quat getQuat() const { return quat(quater[0], quater[1], quater[2], quater[3]); };
 };
 
 class Skeleton

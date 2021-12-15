@@ -25,17 +25,13 @@ void Skeleton::Set()
 
 void Skeleton::Draw()
 {
-	for (int i = 0; i < bones.size() - 1; i++)
+	for (int i = 2; i < bones.size() - 1; i++)
 	{
 		if (i == 0) // don't draw root to pelvis
 			continue;
 
 		vec3 test1 = bones[i].locToGlobBone(bones, bones[i].getVec(), 0);
 		vec3 test2 = bones[bones[i].parentIndex].locToGlobBone(bones, bones[bones[i].parentIndex].getVec(), 0);
-
-		//printf("name: %s\n", bones[i].name);
-		//printf("Pos loc: %f, %f, %f\n", bones[i].pos[0], bones[i].pos[1], bones[i].pos[2]);
-		//printf("Pos glob: %f, %f %f\n\n", test1.x, test1.y, test1.z);
 
 		DrawLine(test1.x, test1.y + offset, test1.z,
 				 test2.x, test2.y + offset, test2.z,
@@ -52,19 +48,12 @@ vec3 Bone::locToGlobBone(const std::vector<Bone>& bones, vec3 position, int deep
 
 	if (parentID != -1)
 	{
-		//quat ptA = { position.x, position.y, position.z, 0 };
-		//quat test = quatNormalize(bones[parentID].getQuat()) * ptA * quatInvert(bones[parentID].getQuat());
-		//vec3 newPos = {test.x, test.y, test.z};
-		
 		Referential refParent = { bones[parentID].getVec(), bones[parentID].getQuat() };
-
-		//vec3 posRelativeToParent = position + bones[parentID].getVec();
-		//vec3 posRelativeToParent = newPos + bones[parentID].getVec();
+		
 		vec3 posRelativeToParent = refParent.locToGlobPos(position);
 
 		return locToGlobBone(bones, posRelativeToParent, deep);
 	}
 
-	//printf("deep: %d, parentID: %d\n", deep, parentID);
 	return position;
 }
