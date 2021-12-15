@@ -11,18 +11,18 @@ class CSimulation : public ISimulation
 {
 	virtual void Init() override
 	{
-		int spine01 =	GetSkeletonBoneIndex("spine_01");
+		int spine01 = GetSkeletonBoneIndex("spine_01");
 		int spineParent = GetSkeletonBoneParentIndex(spine01);
 		const char* spineParentName = GetSkeletonBoneName(spineParent);
 
 		float posX, posY, posZ, quatW, quatX, quatY, quatZ;
 		size_t keyCount = GetAnimKeyCount("ThirdPersonWalk.anim");
 		GetAnimLocalBoneTransform("ThirdPersonWalk.anim", spineParent, keyCount / 2, posX, posY, posZ, quatW, quatX, quatY, quatZ);
-		
+
 		printf("Spine parent bone : %s\n", spineParentName);
 		printf("Anim key count : %ld\n", keyCount);
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
-	
+
 		skel = new Skeleton();
 		skel->Set();
 	}
@@ -40,6 +40,19 @@ class CSimulation : public ISimulation
 
 		// Skeleton
 		skel->Draw();
+
+		//for (int i = 2; i < skel->GetBones()->size() - 10; i++)
+		//{
+		//	/*float x = rand() % 2;
+		//	float y = rand() % 2;
+		//	float z = rand() % 2;*/
+
+		//	skel->MoveBone(i, { 1.f, 0.f, 0.f, 0.f }, 0.005f);
+		//}
+		/*skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.005f);
+		skel->MoveBone(58, { 0.f, 1.f, 0.f, 0.f }, 0.005f);
+		skel->MoveBone(5, { 1.f, 0.f, 0.f, 0.f }, 0.005f);
+		skel->MoveBone(26, {1.f, 0.f, 0.f, 0.f}, 0.005f);*/
 	}
 };
 
@@ -48,6 +61,6 @@ int main()
 	CSimulation simulation;
 	Run(&simulation, 1400, 800);
 
-    return 0;
+	return 0;
 }
 

@@ -26,6 +26,8 @@ public:
 
 	void Set();
 	void Draw();
+	void MoveBone(int indexBone, const quat& rotation, const float& speed);
+	std::vector<Bone>* GetBones() { return &bones; };
 
 private:
 	std::vector<Bone> bones;

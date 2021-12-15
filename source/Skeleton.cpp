@@ -15,10 +15,10 @@ void Skeleton::Set()
 		currentBone.parentIndex = GetSkeletonBoneParentIndex(i);
 
 		GetSkeletonBoneLocalBindTransform(i, currentBone.pos[0], currentBone.pos[1], currentBone.pos[2],
-					currentBone.quater[3], currentBone.quater[0], currentBone.quater[1], currentBone.quater[2]);
+			currentBone.quater[3], currentBone.quater[0], currentBone.quater[1], currentBone.quater[2]);
 
 		bones.push_back(currentBone);
-		
+
 		printf("bone [%d] is named: %s\n", bones[i].index, bones[i].name);
 	}
 }
@@ -34,8 +34,8 @@ void Skeleton::Draw()
 		vec3 test2 = bones[bones[i].parentIndex].locToGlobBone(bones, bones[bones[i].parentIndex].getVec(), 0);
 
 		DrawLine(test1.x, test1.y + offset, test1.z,
-				 test2.x, test2.y + offset, test2.z,
-				 0.f, 0.f, 1.f);	
+			test2.x, test2.y + offset, test2.z,
+			0.f, 0.f, 1.f);
 	}
 }
 
@@ -49,11 +49,23 @@ vec3 Bone::locToGlobBone(const std::vector<Bone>& bones, vec3 position, int deep
 	if (parentID != -1)
 	{
 		Referential refParent = { bones[parentID].getVec(), bones[parentID].getQuat() };
-		
+
 		vec3 posRelativeToParent = refParent.locToGlobPos(position);
 
 		return locToGlobBone(bones, posRelativeToParent, deep);
 	}
 
 	return position;
+}
+
+void Skeleton::MoveBone(int indexBone, const quat& rotation, const float& speed)
+{
+	if (indexBone < 0 || indexBone > 60)
+		return;
+
+	quat newQuat = quatSlerp(bones[indexBone].getQuat(), bones[indexBone].getQuat() * rotation, speed);
+	bones[indexBone].quater[0] = newQuat.x;
+	bones[indexBone].quater[1] = newQuat.y;
+	bones[indexBone].quater[2] = newQuat.z;
+	bones[indexBone].quater[3] = newQuat.w;
 }
