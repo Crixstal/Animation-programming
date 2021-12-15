@@ -63,4 +63,12 @@
       <Filter>Header Files\Maths</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\Resources\skinning.ps">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Data\Resources\skinning.vs">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
 </Project>

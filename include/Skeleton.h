@@ -16,6 +16,8 @@ public:
 
 	vec3 getVec() const { return vec3(pos[0], pos[1], pos[2]); };
 	quat getQuat() const { return quat(quater[0], quater[1], quater[2], quater[3]); };
+
+	float* GetMatrix(const std::vector<Bone>& bones);
 };
 
 class Skeleton
@@ -28,6 +30,8 @@ public:
 	void Draw();
 	void MoveBone(int indexBone, const quat& rotation, const float& speed);
 	std::vector<Bone>* GetBones() { return &bones; };
+	const float* GetBonesMatrix();
+
 
 private:
 	std::vector<Bone> bones;

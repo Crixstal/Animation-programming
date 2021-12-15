@@ -36,6 +36,10 @@
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\targetver.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Data\Resources\skinning.ps" />
+    <None Include="Data\Resources\skinning.vs" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{551567FE-4862-404E-8E15-7C2E35823078}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
