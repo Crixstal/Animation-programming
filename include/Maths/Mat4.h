@@ -55,7 +55,7 @@ inline mat4 scale(const vec3& value)
     };
 }
 
-inline mat4 rotateX(float angleRadians)
+inline mat4 rotateX(const float& angleRadians)
 {
     float cos = cosf(angleRadians), sin = sinf(angleRadians);
 
@@ -67,7 +67,7 @@ inline mat4 rotateX(float angleRadians)
     };
 }
 
-inline mat4 rotateY(float angleRadians)
+inline mat4 rotateY(const float& angleRadians)
 {
     float cos = cosf(angleRadians), sin = sinf(angleRadians);
 
@@ -79,7 +79,7 @@ inline mat4 rotateY(float angleRadians)
     };
 }
 
-inline mat4 rotateZ(float angleRadians)
+inline mat4 rotateZ(const float& angleRadians)
 {
     float cos = cosf(angleRadians), sin = sinf(angleRadians);
 
@@ -91,7 +91,12 @@ inline mat4 rotateZ(float angleRadians)
     };
 }
 
-inline mat4 frustum(float left, float right, float bottom, float top, float near, float far)
+inline mat4 rotateXYZ(const vec3& angleRadians)
+{
+    return rotateX(angleRadians.x) * rotateY(angleRadians.y) * rotateZ(angleRadians.z);
+}
+
+inline mat4 frustum(const float& left, const float& right, const float& bottom, const float& top, const float& near, const float& far)
 {
     // Pre-compute divisions
     float OneOverTopMinusBottom = 1.f / (top - bottom);
@@ -106,7 +111,7 @@ inline mat4 frustum(float left, float right, float bottom, float top, float near
     };
 }
 
-inline mat4 orthographic(float left, float right, float bottom, float top, float near, float far)
+inline mat4 orthographic(const float& left, const float& right, const float& bottom, const float& top, const float& near, const float& far)
 {
     // Pre-compute divisions
     float OneOverTopMinusBottom = 1.f / (top - bottom);
@@ -121,7 +126,7 @@ inline mat4 orthographic(float left, float right, float bottom, float top, float
     };
 }
 
-inline mat4 perspective(float fovY, float aspect, float near, float far)
+inline mat4 perspective(const float& fovY, const float& aspect, const float& near, const float& far)
 {
     float top = near * tanf(fovY * 0.5f);
     float right = top * aspect;

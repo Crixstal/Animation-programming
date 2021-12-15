@@ -20,11 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="source\AnimationProgramming.cpp" />
+    <ClCompile Include="source\Bone.cpp" />
     <ClCompile Include="source\Referential.cpp" />
     <ClCompile Include="source\Skeleton.cpp" />
     <ClCompile Include="source\stdafx.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Bone.h" />
     <ClInclude Include="include\Engine.h" />
     <ClInclude Include="include\Maths\Definitions.h" />
     <ClInclude Include="include\Maths\Mat4.h" />

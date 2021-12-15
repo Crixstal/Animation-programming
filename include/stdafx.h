@@ -10,8 +10,14 @@
 #include <stdio.h>
 #include <tchar.h>
 
-#include "Skeleton.h"
+#include <vector>
+#include <stdlib.h>
+
 #include "Definitions.h"
+#include "Quaternion.h" // include Mat4.h which include Vector3.h
+#include "Referential.h"
+#include "Skeleton.h"
+#include "Bone.h"
 
 
 // TODO: reference additional headers your program requires here

@@ -194,7 +194,7 @@ inline vec3 reflect(const vec3& toReflect, const vec3& normal)
 	return toReflect - 2.f * normal * dotProduct(toReflect, normal);
 }
 
-inline vec3 getVectorProjection(float dot, const vec3& axis)
+inline vec3 getVectorProjection(const float& dot, const vec3& axis)
 {
 	return dot / vecMagnitude(axis) * axis;
 }

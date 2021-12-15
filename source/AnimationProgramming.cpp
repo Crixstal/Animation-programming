@@ -1,7 +1,6 @@
 // AnimationProgramming.cpp : Defines the entry point for the console application.
 //
 
-#include <iostream>
 #include "stdafx.h"
 
 #include "Engine.h"

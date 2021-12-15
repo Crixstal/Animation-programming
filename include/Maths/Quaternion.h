@@ -303,7 +303,7 @@ inline quat quatFromAxisAngle(const vec3& axis, float angle)
     return quatNormalize(result);
 }
 
-inline void quatToAxisAngle(quat q, vec3* outAxis, float* outAngle)
+inline void quatToAxisAngle(quat& q, vec3* outAxis, float* outAngle)
 {
     if (fabs(q.w) > 1.0f)
         q = quatNormalize(q);
@@ -351,7 +351,7 @@ inline vec3 vec3Unproject(const vec3& source, const mat4& projection, const mat4
     };
 }
 
-inline vec3 modelMatrixToRotation(mat4 matrix)
+inline vec3 modelMatrixToRotation(mat4& matrix)
 {
     matrix.e[3] = 0.f;
     matrix.e[7] = 0.f;
