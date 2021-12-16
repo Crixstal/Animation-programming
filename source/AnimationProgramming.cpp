@@ -40,12 +40,14 @@ class CSimulation : public ISimulation
 		// Skeleton
 		skel->Draw();
 
+		//skel->MoveBone(1, { 1.f, 0.f, 0.f, 0.f }, 0.0001f);
 		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.005f);
 		//skel->MoveBone(58, { 0.f, 1.f, 0.f, 0.f }, 0.005f);
 		//skel->MoveBone(5, { 1.f, 0.f, 0.f, 0.f }, 0.005f);
 		//skel->MoveBone(26, {1.f, 0.f, 0.f, 0.f}, 0.005f);
+		//skel->MoveBone(8, {1.f, 0.f, 0.f, 0.f}, 0.0001f);
 
-		SetSkinningPose(skel->GetBonesMatrix(), 60);
+		SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
 	}
 };
 
@@ -56,4 +58,3 @@ int main()
 
 	return 0;
 }
-

@@ -20,6 +20,8 @@ void Skeleton::Set()
 
 		printf("bone %d name: %s\n", bones[i].index, bones[i].name);
 	}
+
+	bones_base = bones;
 }
 
 void Skeleton::Draw()
@@ -55,7 +57,7 @@ const float* Skeleton::GetBonesMatrix()
 	float* matrix = new float[(bones.size()) * sizeof(Bone)];
 
 	for (int i = 0; i < bones.size(); i++)
-		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones[i].GetMatrix(bones), sizeof(mat4));
+		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones[i].GetMatrix(bones, bones_base), sizeof(mat4));
 
 	return matrix;
 }
