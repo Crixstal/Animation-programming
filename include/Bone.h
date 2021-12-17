@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "Definitions.h"
 
@@ -12,14 +13,20 @@ public:
 
 	const char* name = nullptr;
 	int index = 0;
-	int parentIndex = 0;
-	float pos[3] = {};
-	float quater[4] = {};
+	Bone* parent = nullptr;
+	vec3 pos = {};
+	quat rot = {};
 
-	vec3 locToGlobBone(const std::vector<Bone>& bones, const vec3& position, int deep);
+	// truc de gros sale
+	mat4 localAnimModel = {};
+	mat4 globalAnimModel = {};
+	vec3 currAnimPos = {};
+	quat currAnimRot = {};
 
-	vec3 getVec() const { return vec3(pos[0], pos[1], pos[2]); };
-	quat getQuat() const { return quat(quater[0], quater[1], quater[2], quater[3]); };
+	vec3 locToGlobVec(const vec3& myVec) const;
+	quat locToGlobQuat(const quat& myQuat) const;
 
-	float* GetMatrix(const std::vector<Bone>& bones, const std::vector<Bone>& bones_base);
+	mat4 GetMatrix(const std::vector<std::shared_ptr<Bone>>& bones, const std::vector<std::shared_ptr<Bone>>& bones_base);
+	mat4 GetLocalModel() const;
+	mat4 GetGlobalModel() const;
 };

@@ -20,7 +20,7 @@ class CSimulation : public ISimulation
 
 		printf("Spine parent bone : %s\n", spineParentName);
 		printf("Anim key count : %ld\n", keyCount);
-		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
+		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
 
 		skel = new Skeleton();
 		skel->Set();
@@ -38,16 +38,10 @@ class CSimulation : public ISimulation
 		DrawLine(0, 0, 0, 0, 0, 100, 10, 0, 1);
 
 		// Skeleton
+		//SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
+		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.00025f);
+		skel->animSkel(frameTime);
 		skel->Draw();
-
-		//skel->MoveBone(1, { 1.f, 0.f, 0.f, 0.f }, 0.0001f);
-		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.005f);
-		//skel->MoveBone(58, { 0.f, 1.f, 0.f, 0.f }, 0.005f);
-		//skel->MoveBone(5, { 1.f, 0.f, 0.f, 0.f }, 0.005f);
-		//skel->MoveBone(26, {1.f, 0.f, 0.f, 0.f}, 0.005f);
-		//skel->MoveBone(8, {1.f, 0.f, 0.f, 0.f}, 0.0001f);
-
-		SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
 	}
 };
 
@@ -56,5 +50,7 @@ int main()
 	CSimulation simulation;
 	Run(&simulation, 1400, 800);
 
+	delete simulation.skel;
+	
 	return 0;
 }

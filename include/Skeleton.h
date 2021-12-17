@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "Bone.h"
 
@@ -14,12 +15,12 @@ public:
 	void Draw();
 	void MoveBone(const int indexBone, const quat& rotation, const float& speed);
 	const float* GetBonesMatrix();
+	const void animSkel(float& frameTime);
+
 	const int GetBonesNumber() { return bones.size(); };
 
 private:
-	std::vector<Bone>* GetBones() { return &bones; };
-
-	std::vector<Bone> bones;
-	std::vector<Bone> bones_base;
+	std::vector<std::shared_ptr<Bone>> bones;
+	std::vector<std::shared_ptr<Bone>> bones_base;
 	float offset = -100.f;
 };

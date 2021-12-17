@@ -43,19 +43,14 @@ inline quat operator-(const quat& q, const float& k)
     };
 }
 
-inline quat operator*(const quat& quat1, const quat& quat2)
+inline quat operator*(const quat& q1, const quat& q2)
 {
-    quat result = quat(0.f, 0.f, 0.f, 0.f);
-
-    float qax = quat1.x, qay = quat1.y, qaz = quat1.z, qaw = quat1.w;
-    float qbx = quat2.x, qby = quat2.y, qbz = quat2.z, qbw = quat2.w;
-
-    result.x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
-    result.y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
-    result.z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
-    result.w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
-
-    return result;
+    return {
+         q1.x * q2.w + q1.y * q2.z - q1.z * q2.y + q1.w * q2.x,
+        -q1.x * q2.z + q1.y * q2.w + q1.z * q2.x + q1.w * q2.y,
+         q1.x * q2.y - q1.y * q2.x + q1.z * q2.w + q1.w * q2.z,
+        -q1.x * q2.x - q1.y * q2.y - q1.z * q2.z + q1.w * q2.w
+    };
 }
 inline quat operator*(const quat& q, const float& k)
 {
@@ -87,6 +82,15 @@ inline quat operator*=(quat& quat1, const quat& quat2)
     return quat1;
 }
 
+inline bool operator==(quat& quat1, const quat& quat2)
+{
+    return (
+        quat1.x == quat2.x &&
+        quat1.y == quat2.y &&
+        quat1.z == quat2.z &&
+        quat1.w == quat2.w
+        );
+}
 
 inline quat quatIdentity()
 {
@@ -232,40 +236,55 @@ inline quat quatNlerp(const quat& q1, const quat& q2, const float& amount)
     return quatNormalize(result);
 }
 
-// Calculates spherical linear interpolation between two quaternions
-inline quat quatSlerp(const quat& q1, const quat& q2, const float& amount)
+inline float FloatSelect(float Comparand, float ValueGEZero, float ValueLTZero)
 {
-    quat result = { 0 };
+    if (Comparand >= 0.f)
+        return ValueGEZero;
 
-    float cosHalfTheta = q1.x * q2.x + q1.y * q2.y + q1.z * q2.z + q1.w * q2.w;
+    return ValueLTZero;
+}
 
-    if (fabs(cosHalfTheta) >= 1.0f) result = q1;
-    else if (cosHalfTheta > 0.95f) result = quatNlerp(q1, q2, amount);
+// Calculates spherical linear interpolation between two quaternions
+inline quat quatSlerp(const quat& Quat1, const quat& Quat2, float amount)
+{
+    // Get cosine of angle between quats.
+    const float RawCosom =
+        Quat1.x * Quat2.x +
+        Quat1.y * Quat2.y +
+        Quat1.z * Quat2.z +
+        Quat1.w * Quat2.w;
+    // Unaligned quats - compensate, results in taking shorter route.
+    const float Cosom = FloatSelect(RawCosom, RawCosom, -RawCosom);
+
+    float Scale0, Scale1;
+
+    if (Cosom < 0.9999f)
+    {
+        const float Omega = acosf(Cosom);
+        const float InvSin = 1.f / sinf(Omega);
+        Scale0 = sinf((1.f - amount) * Omega) * InvSin;
+        Scale1 = sinf(amount * Omega) * InvSin;
+    }
     else
     {
-        float halfTheta = acosf(cosHalfTheta);
-        float sinHalfTheta = sqrtf(1.0f - cosHalfTheta * cosHalfTheta);
-
-        if (fabs(sinHalfTheta) < 0.001f)
-        {
-            result.x = (q1.x * 0.5f + q2.x * 0.5f);
-            result.y = (q1.y * 0.5f + q2.y * 0.5f);
-            result.z = (q1.z * 0.5f + q2.z * 0.5f);
-            result.w = (q1.w * 0.5f + q2.w * 0.5f);
-        }
-        else
-        {
-            float ratioA = sinf((1 - amount) * halfTheta) / sinHalfTheta;
-            float ratioB = sinf(amount * halfTheta) / sinHalfTheta;
-
-            result.x = (q1.x * ratioA + q2.x * ratioB);
-            result.y = (q1.y * ratioA + q2.y * ratioB);
-            result.z = (q1.z * ratioA + q2.z * ratioB);
-            result.w = (q1.w * ratioA + q2.w * ratioB);
-        }
+        // Use linear interpolation.
+        Scale0 = 1.0f - amount;
+        Scale1 = amount;
     }
 
-    return result;
+    // In keeping with our flipped Cosom:
+    Scale1 = FloatSelect(RawCosom, Scale1, -Scale1);
+
+    // return Comparand >= 0.f ? ValueGEZero : ValueLTZero;
+
+    quat Result;
+
+    Result.x = Scale0 * Quat1.x + Scale1 * Quat2.x;
+    Result.y = Scale0 * Quat1.y + Scale1 * Quat2.y;
+    Result.z = Scale0 * Quat1.z + Scale1 * Quat2.z;
+    Result.w = Scale0 * Quat1.w + Scale1 * Quat2.w;
+
+    return Result;
 }
 
 inline quat quatFromVector3ToVector3(const vec3& from, const vec3& to)
@@ -351,13 +370,13 @@ inline vec3 vec3Unproject(const vec3& source, const mat4& projection, const mat4
     };
 }
 
-inline vec3 modelMatrixToRotation(mat4& matrix)
+inline vec3 matrixToRotation(mat4& matrix)
 {
     matrix.e[3] = 0.f;
     matrix.e[7] = 0.f;
     matrix.e[11] = 0.f;
 
-    vec3 scale = modelMatrixToScale(matrix);
+    vec3 scale = matrixToScale(matrix);
 
     matrix.e[0] /= scale.x;
     matrix.e[4] /= scale.x;

@@ -5,19 +5,31 @@
 #include "Vector3.h"
 
 
-inline mat4 operator*(const mat4& a, const mat4& b)
+inline vec4 operator*(const mat4& mat, const vec4& vec)
 {
-    mat4 result = { 0.f };
+    vec4 result = { 0.f, 0.f, 0.f, 0.f };
 
-    for (int i = 0; i < 4; i++)
+    for (int column = 0; column < 4; column++)
     {
-        for (int j = 0; j < 4; j++)
+        for (int line = 0; line < 4; line++)
         {
-            float sum = 0.f;
-            for (int k = 0; k < 4; k++)
-                sum += a.c[i].e[k] * b.c[k].e[j];
+            result.e[column] += *(&mat.l[line].x + column) * vec.e[line];
+        }
+    }
 
-            result.c[i].e[j] = sum;
+    return result;
+}
+
+inline mat4 operator*(const mat4& mat1, const mat4& mat2)
+{
+    mat4 result = {};
+
+    for (int column = 0; column < 4; ++column)
+    {
+        for (int line = 0; line < 4; ++line)
+        {
+            for (int vect = 0; vect < 4; ++vect)
+                result.l[line].e[column] += *(&mat1.l[vect].x + column) * mat2.l[line].e[vect];
         }
     }
 
@@ -38,10 +50,10 @@ inline mat4 matIdentity()
 inline mat4 translate(const vec3& value)
 {
     return {
-        1.f, 0.f, 0.f, value.x,
-        0.f, 1.f, 0.f, value.y,
-        0.f, 0.f, 1.f, value.z,
-        0.f, 0.f, 0.f, 1.f
+    1.f, 0.f, 0.f, 0.f,
+    0.f, 1.f, 0.f, 0.f,
+    0.f, 0.f, 1.f, 0.f,
+    value.x, value.y, value.z, 1.f
     };
 }
 
@@ -61,8 +73,8 @@ inline mat4 rotateX(const float& angleRadians)
 
     return {
         1.f, 0.f,  0.f, 0.f,
-        0.f, cos, -sin, 0.f,
-        0.f, sin,  cos, 0.f,
+        0.f, cos, sin, 0.f,
+        0.f, -sin,  cos, 0.f,
         0.f, 0.f,  0.f, 1.f
     };
 }
@@ -72,9 +84,9 @@ inline mat4 rotateY(const float& angleRadians)
     float cos = cosf(angleRadians), sin = sinf(angleRadians);
 
     return {
-        cos,  0.f, sin, 0.f,
+        cos,  0.f, -sin, 0.f,
         0.f,  1.f, 0.f, 0.f,
-        -sin, 0.f, cos, 0.f,
+        sin, 0.f, cos, 0.f,
         0.f,  0.f, 0.f, 1.f
     };
 }
@@ -84,8 +96,8 @@ inline mat4 rotateZ(const float& angleRadians)
     float cos = cosf(angleRadians), sin = sinf(angleRadians);
 
     return {
-        cos, -sin, 0.f, 0.f,
-        sin, cos,  0.f, 0.f,
+        cos, sin, 0.f, 0.f,
+        -sin, cos,  0.f, 0.f,
         0.f, 0.f,  1.f, 0.f,
         0.f, 0.f,  0.f, 1.f
     };
@@ -93,45 +105,54 @@ inline mat4 rotateZ(const float& angleRadians)
 
 inline mat4 rotateXYZ(const vec3& angleRadians)
 {
-    return rotateX(angleRadians.x) * rotateY(angleRadians.y) * rotateZ(angleRadians.z);
+    return rotateY(angleRadians.y) * rotateX(angleRadians.x) * rotateZ(angleRadians.z);
 }
 
 inline mat4 frustum(const float& left, const float& right, const float& bottom, const float& top, const float& near, const float& far)
 {
-    // Pre-compute divisions
-    float OneOverTopMinusBottom = 1.f / (top - bottom);
-    float OneOverNeasMinusFar = 1.f / (near - far);
-    float OneOverRightMinusLeft = 1.f / (right - left);
+    float rightMinusLeft = right - left;
+    float topBMinusottom = top - bottom;
+    float farMinusNear = far - near;
 
     return {
-        2.f * near * OneOverRightMinusLeft, 0.f,                                (right + left) * OneOverRightMinusLeft, 0.f,
-        0.f,                                2.f * near * OneOverTopMinusBottom, (top + bottom) * OneOverTopMinusBottom, 0.f,
-        0.f,                                0.f,                                (far + near) * OneOverNeasMinusFar,     2.f * far * near * OneOverNeasMinusFar,
-        0.f,                                0.f,                                -1.f,                                   0.f
+        (2.f * near) / rightMinusLeft,      0.f,                                0.f,                                    0.f,
+        0.f,                                (2.f * near) / topBMinusottom,      0.f,                                    0.f,
+        (right + left) / rightMinusLeft,    (top + bottom) / topBMinusottom,    -(far + near) / farMinusNear,           -1.f,
+        0.f,                                0.f,                                -(far * near * 2.f) / farMinusNear,     0.f
     };
 }
 
 inline mat4 orthographic(const float& left, const float& right, const float& bottom, const float& top, const float& near, const float& far)
 {
-    // Pre-compute divisions
-    float OneOverTopMinusBottom = 1.f / (top - bottom);
-    float OneOverFarMinusNear = 1.f / (far - near);
-    float OneOverRightMinusLeft = 1.f / (right - left);
+    float rightMinusLeft = right - left;
+    float topMinusBottom = top - bottom;
+    float farMinusNear = far - near;
 
-    return {
-        2.f * OneOverRightMinusLeft, 0.f,                         0.f,                        -(right + left) * OneOverRightMinusLeft,
-        0.f,                         2.f * OneOverTopMinusBottom, 0.f,                        -(top + bottom) * OneOverTopMinusBottom,
-        0.f,                         0.f,                         -2.f * OneOverFarMinusNear, -(far + near) * OneOverFarMinusNear,
-        0.f,                         0.f,                         0.f,                        1.f
+    return
+    {
+        2.f / rightMinusLeft,               0.f,                                0.f,                            0.f,
+        0.f,                                2.f / topMinusBottom,               0.f,                            0.f,
+        0.f,                                0.f,                                -2 / farMinusNear,              0.f,
+       -(right + left) / rightMinusLeft,    -(top + bottom) / topMinusBottom,   -(near + far) / farMinusNear,   1.f
     };
 }
 
-inline mat4 perspective(const float& fovY, const float& aspect, const float& near, const float& far)
+inline mat4 perspective(const float& fovY, const float& aspect, const float& near, const float& far, const bool& ortho)
 {
-    float top = near * tanf(fovY * 0.5f);
-    float right = top * aspect;
+    float top;
 
-    return frustum(-right, right, -top, top, near, far);
+    if (ortho)
+        top = tanf(DEG2RAD * fovY * 0.5f);
+    else 
+        top = near * tanf(DEG2RAD * fovY * 0.5f);
+
+    float right = top * aspect;
+    float bottom = -top, left = -right;
+
+    if (ortho)
+        return orthographic(left, right, bottom, top, near, far);
+    else
+        return frustum(left, right, bottom, top, near, far);
 }
 
 inline mat4 mat3ToMat4(const mat3& mat)
@@ -161,26 +182,16 @@ inline mat4 lookAt(const vec3& eye, const vec3& center, const vec3& up)
 
 inline mat4 quaternionToMatrix(const quat& q)
 {
-    mat4 result = matIdentity();
+    float xx = q.x * q.x, yy = q.y * q.y, zz = q.z * q.z;
+    float xz = q.x * q.z, xy = q.x * q.y, xw = q.x * q.w;
+    float yz = q.y * q.z, yw = q.y * q.w, zw = q.z * q.w;
 
-    float a2 = 2 * (q.x * q.x), b2 = 2 * (q.y * q.y), c2 = 2 * (q.z * q.z);
-
-    float ab = 2 * (q.x * q.y), ac = 2 * (q.x * q.z), bc = 2 * (q.y * q.z);
-    float ad = 2 * (q.x * q.w), bd = 2 * (q.y * q.w), cd = 2 * (q.z * q.w);
-
-    result.e[0] = 1 - b2 - c2;
-    result.e[1] = ab - cd;
-    result.e[2] = ac + bd;
-
-    result.e[4] = ab + cd;
-    result.e[5] = 1 - a2 - c2;
-    result.e[6] = bc - ad;
-
-    result.e[8] = ac - bd;
-    result.e[9] = bc + ad;
-    result.e[10] = 1 - a2 - b2;
-
-    return result;
+    return {
+        1 - 2 * (yy + zz),    2 * (xy + zw),        2 * (xz - yw),        0.f,
+        2 * (xy - zw),        1 - 2 * (xx + zz),    2 * (yz + xw),        0.f,
+        2 * (xz + yw),        2 * (yz - xw),        1 - 2 * (xx + yy),    0.f,
+        0.f,                  0.f,                  0.f,                  1.f
+    };
 }
 
 inline mat3 mat4ToMat3(const mat4& mat)
@@ -260,12 +271,12 @@ inline mat4 matInvert(const mat4& mat)
     };
 }
 
-inline vec3 modelMatrixToPosition(const mat4& matrix)
+inline vec3 matrixToPosition(const mat4& matrix)
 {
-    return vec3(matrix.e[3], matrix.e[7], matrix.e[11]);
+    return vec3(matrix.e[12], matrix.e[13], matrix.e[14]);
 }
 
-inline vec3 modelMatrixToScale(const mat4& matrix)
+inline vec3 matrixToScale(const mat4& matrix)
 {
     return (
         vecMagnitude({ matrix.e[0], matrix.e[4], matrix.e[8] }),

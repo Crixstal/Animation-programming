@@ -5,34 +5,39 @@
 
 void Skeleton::Set()
 {
-	Bone currentBone;
-
 	for (int i = 0; i < GetSkeletonBoneCount() - 7; i++) // - 7 to remove IK
 	{
+		bones.push_back(std::make_shared<Bone>());
+		Bone& currentBone = *bones[i].get();
+
 		currentBone.name = GetSkeletonBoneName(i);
 		currentBone.index = i;
-		currentBone.parentIndex = GetSkeletonBoneParentIndex(i);
 
-		GetSkeletonBoneLocalBindTransform(i, currentBone.pos[0], currentBone.pos[1], currentBone.pos[2],
-			currentBone.quater[3], currentBone.quater[0], currentBone.quater[1], currentBone.quater[2]);
+		if (GetSkeletonBoneParentIndex(i) == -1)
+			currentBone.parent = nullptr;
+		else
+			currentBone.parent = bones[GetSkeletonBoneParentIndex(i)].get();
 
-		bones.push_back(currentBone);
+		GetSkeletonBoneLocalBindTransform(i, currentBone.pos.x, currentBone.pos.y, currentBone.pos.z,
+			currentBone.rot.w, currentBone.rot.x, currentBone.rot.y, currentBone.rot.z);
 
-		printf("bone %d name: %s\n", bones[i].index, bones[i].name);
+
+		printf("bone %d name: %s\n", bones[i]->index, bones[i]->name);
 	}
 
-	bones_base = bones;
+	for (auto& bone : bones)
+		bones_base.push_back(std::make_shared<Bone>(*bone.get()));
+		//bones_base = bones;
 }
 
 void Skeleton::Draw()
 {
 	for (int i = 2; i < bones.size() - 1; i++)
 	{
-		if (i == 0) // don't draw root to pelvis
-			continue;
-
-		vec3 joint1 = bones[i].locToGlobBone(bones, bones[i].getVec(), 0);
-		vec3 joint2 = bones[bones[i].parentIndex].locToGlobBone(bones, bones[bones[i].parentIndex].getVec(), 0);
+		vec3 joint1 = bones[i]->locToGlobVec(bones[i]->pos);
+		vec3 joint2 = bones[i]->parent->locToGlobVec(bones[i]->parent->pos);
+		//vec3 joint1 = bones[i]->currAnimPos;
+		//vec3 joint2 = bones[i]->parent->currAnimPos;
 
 		DrawLine(joint1.x, joint1.y + offset, joint1.z,
 				 joint2.x, joint2.y + offset, joint2.z,
@@ -45,11 +50,7 @@ void Skeleton::MoveBone(const int indexBone, const quat& rotation, const float& 
 	if (indexBone < 0 || indexBone > bones.size())
 		return;
 
-	quat newQuat = quatSlerp(bones[indexBone].getQuat(), bones[indexBone].getQuat() * rotation, speed);
-	bones[indexBone].quater[0] = newQuat.x;
-	bones[indexBone].quater[1] = newQuat.y;
-	bones[indexBone].quater[2] = newQuat.z;
-	bones[indexBone].quater[3] = newQuat.w;
+	bones[indexBone]->rot = quatSlerp(bones[indexBone]->rot, bones[indexBone]->rot * rotation, speed);
 }
 
 const float* Skeleton::GetBonesMatrix()
@@ -57,7 +58,46 @@ const float* Skeleton::GetBonesMatrix()
 	float* matrix = new float[(bones.size()) * sizeof(Bone)];
 
 	for (int i = 0; i < bones.size(); i++)
-		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones[i].GetMatrix(bones, bones_base), sizeof(mat4));
+		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones[i]->GetMatrix(bones, bones_base).e, sizeof(mat4));
 
 	return matrix;
+}
+
+const void Skeleton::animSkel(float& frameTime)
+{
+	quat currRotDiff = {};
+	quat nextRotDiff = {};
+	vec3 currPosDiff = {};
+	vec3 nextPosDiff = {};
+
+	static int currKeyFrame = 0;
+	static float timer = 0.f;
+	timer += frameTime;
+	const static float timerBetweenFrame = 0.05f;
+	const char* animName = "ThirdPersonWalk.anim";
+
+	if (timer >= timerBetweenFrame)
+	{
+		++currKeyFrame;
+		timer = 0.f;
+	}
+
+	float newTimer = timer / timerBetweenFrame;
+
+	for (auto& bone : bones)
+	{
+		GetAnimLocalBoneTransform(animName, bone->index, currKeyFrame % GetAnimKeyCount(animName), currPosDiff.x, currPosDiff.y, currPosDiff.z, currRotDiff.w, currRotDiff.x, currRotDiff.y, currRotDiff.z);
+		GetAnimLocalBoneTransform(animName, bone->index, (currKeyFrame + 1) % GetAnimKeyCount(animName), nextPosDiff.x, nextPosDiff.y, nextPosDiff.z, nextRotDiff.w, nextRotDiff.x, nextRotDiff.y, nextRotDiff.z);
+
+		//bone->currAnimPos = matrixToPosition(bone->globalAnimModel);
+
+		bone->pos = bones_base[bone->index]->pos + lerp(currPosDiff, nextPosDiff, newTimer);
+		bone->rot = bones_base[bone->index]->rot * quatSlerp(currRotDiff, nextRotDiff, newTimer);
+
+		//bone->localAnimModel = translate(bone->pos) * quaternionToMatrix(currRotDiff);
+		//bone->globalAnimModel = bones_base[bone->index]->GetGlobalModel() * bone->localAnimModel;
+		
+		//if (bone->parent)
+		//	bone->globalAnimModel = bone->parent->globalAnimModel * bone->globalAnimModel;
+	}
 }

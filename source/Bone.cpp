@@ -2,51 +2,64 @@
 
 #include "Engine.h"
 #include "stdafx.h"
-#include <iostream>
 
-vec3 Bone::locToGlobBone(const std::vector<Bone>& bones, const vec3& position, int deep)
+vec3 Bone::locToGlobVec(const vec3& myVec) const
 {
-	++deep;
-	int parentID = index;
-	for (int i = 0; i < deep; i++)
-		parentID = bones[parentID].parentIndex;
-
-	if (parentID != -1)
+	/*if (parent)
 	{
-		Referential refParent = { bones[parentID].getVec(), bones[parentID].getQuat() };
+		Referential refParent = { parent->pos, parent->rot };
 
-		vec3 posRelativeToParent = refParent.locToGlobPos(position);
+		vec3 posRelativeToParent = refParent.locToGlobPos(myVec);
 
-		return locToGlobBone(bones, posRelativeToParent, deep);
+		return posRelativeToParent;
 	}
 
-	return position;
+	return myVec;*/
+	return matrixToPosition(GetGlobalModel());
 }
 
-
-float* Bone::GetMatrix(const std::vector<Bone>& bones, const std::vector<Bone>& bones_base)
+quat Bone::locToGlobQuat(const quat& myQuat) const
 {
+	if (parent)
+		return parent->rot * myQuat;
 
-	// Moved Bone
-	mat4 T_moved = translate(locToGlobBone(bones, getVec(), 0));
-	mat4 R_moved = rotateXYZ(quaternionToEuler(getQuat()));
-	mat4 S_moved = scale({ 1.f, 1.f, 1.f });
+	return myQuat;
+}
 
-	mat4 TRS_moved = T_moved * R_moved * S_moved;
-
-
-	// Base Bone
-	mat4 T = translate(locToGlobBone(bones_base, bones_base[index].getVec(), 0));
-	mat4 R = rotateXYZ(quaternionToEuler(bones_base[index].getQuat()));
+mat4 Bone::GetMatrix(const std::vector<std::shared_ptr<Bone>>& bones, const std::vector<std::shared_ptr<Bone>>& bones_base)
+{
+	const char* animName = "ThirdPersonWalk.anim";
 	mat4 S = scale({ 1.f, 1.f, 1.f });
-	
-	mat4 TRS_base = T * R * S;
 
-	// Are TRS_base and TRS_moved the same?
+	vec3 rotDiff = quaternionToEuler(bones_base[index]->rot) - quaternionToEuler(bones[index]->rot);
+	vec3 posDiff = bones_base[index]->pos - bones[index]->pos;
 
-	// the (strange) matrix to return
-	//mat4 to_return = TRS_moved * matInvert(TRS_base);
-	mat4 to_return = TRS_base * matInvert(TRS_moved);
+	mat4 TRSLocalBase = bones_base[index]->GetLocalModel();
 
-	return to_return.e;
+	// global
+	mat4 TRSGlobalBase = bones_base[index]->GetGlobalModel();
+
+	if (parent)
+		globalAnimModel = parent->globalAnimModel * globalAnimModel;
+
+	return bones[index]->globalAnimModel * matInvert(TRSGlobalBase);
+}
+
+mat4 Bone::GetLocalModel() const
+{
+	mat4 T = translate(pos);
+	mat4 R = quaternionToMatrix(rot);
+	mat4 S = scale({ 1.f, 1.f, 1.f });
+
+	return T * R * S;
+}
+
+mat4 Bone::GetGlobalModel() const
+{
+	mat4 local = GetLocalModel();
+
+	if (parent)
+		return parent->GetGlobalModel() * local;
+
+	return local;
 }

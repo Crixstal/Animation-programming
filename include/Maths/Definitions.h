@@ -71,14 +71,14 @@ union mat3
 {
     mat3() = default;
     float e[9] = { 0.f };
-    vec3  c[3];
+    vec3  l[3];
 };
 
 union mat4
 {
     mat4() = default;
     float e[16] = { 0.f };
-    vec4  c[4];
+    vec4  l[4];
 };
 
 union quat
@@ -110,18 +110,5 @@ vec2 operator*(const T& scale, const vec2& vec)
     return vec * scale;
 }
 
-inline vec4 operator*(const mat4& m, const vec4& v)
-{
-    vec4 result;
-
-    for (int i = 0; i < 4; i++)
-    {
-        float sum = 0.f;
-        for (int j = 0; j < 4; j++)
-            sum += m.c[i].e[j] * v.e[j];
-
-        result.e[i] = sum;
-    }
-
-    return result;
-}
+template<typename T>
+T lerp(const T& a, const T& b, float factor) { return a + (b - a) * factor; }

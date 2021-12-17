@@ -2,8 +2,8 @@
 /////////////////////
 // INPUT VARIABLES //
 /////////////////////
-in vec3 inputPosition;
-in vec3 normal;
+in lowp vec3 inputPosition;
+in lowp vec3 normal;
 in lowp vec4 boneIndices;
 in lowp vec4 boneWeights;
 
