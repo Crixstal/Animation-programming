@@ -19,8 +19,8 @@ public:
 
 	const int GetBonesNumber() { return bones.size(); };
 
-private:
-	std::vector<std::shared_ptr<Bone>> bones;
-	std::vector<std::shared_ptr<Bone>> bones_base;
+//private:
+	std::vector<Bone> bones_base;
+	std::vector<Bone> bones;
 	float offset = -100.f;
 };

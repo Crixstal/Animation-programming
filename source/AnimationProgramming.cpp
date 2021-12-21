@@ -39,8 +39,8 @@ class CSimulation : public ISimulation
 
 		// Skeleton
 		//SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
-		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.00025f);
-		skel->animSkel(frameTime);
+		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.0005f);
+		//skel->animSkel(frameTime);
 		skel->Draw();
 	}
 };
