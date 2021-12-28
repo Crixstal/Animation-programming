@@ -11,7 +11,7 @@ public:
 	Skeleton() {}
 	~Skeleton() {}
 
-	void Set();
+	void Init();
 	void Draw();
 	void MoveBone(const int indexBone, const quat& rotation, const float& speed);
 	const float* GetBonesMatrix();
@@ -19,8 +19,8 @@ public:
 
 	const int GetBonesNumber() { return bones.size(); };
 
-//private:
-	std::vector<Bone> bones_base;
-	std::vector<Bone> bones;
+	std::vector<std::shared_ptr<Bone>> bones;
+	std::vector<std::shared_ptr<Bone>> bones_base;
 	float offset = -100.f;
+private:
 };

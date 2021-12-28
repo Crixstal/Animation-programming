@@ -11,7 +11,8 @@ public:
 	virtual void Init() {}
 	virtual void Update( float frameTime ){}
 
-	Skeleton* skel = nullptr;
+	//Skeleton* skel = nullptr;
+	Animation* anim = nullptr;
 };
 
 #endif

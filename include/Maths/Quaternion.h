@@ -66,6 +66,16 @@ inline quat operator*(const quat& q, const float& k)
     };
 }
 
+inline quat operator/(const quat& q1, const quat& q2)
+{
+    return {
+        q1.x / q2.x,
+        q1.y / q2.y,
+        q1.z / q2.z,
+        q1.w / q2.w
+    };
+}
+
 inline quat operator*=(quat& quat1, const quat& quat2)
 {
     quat1 = quat1 * quat2;

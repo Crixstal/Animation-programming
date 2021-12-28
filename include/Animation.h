@@ -5,17 +5,26 @@
 #include "Bone.h"
 #include "Definitions.h"
 
+class Skeleton;
+
 class Animation
 {
 public:
-	Animation() {}
-	~Animation() {}
+	Animation();
+	~Animation() {};
+	
+	void Update(float frameTime);
 
-	//Skeleton* skel = nullptr;
+	// Skeleton to animate
+	Skeleton* skel = nullptr;
+
+	//	Local differences
 	std::vector<quat> localRotDiff;
 	std::vector<vec3> localPosDiff;
-	//quat localRotDiff = {};
-	//vec3 localPosDiff = {};
 
-	void Set();
+	//	Animation matrix data
+	std::vector<mat4> TRSLocalAnim;
+	std::vector<mat4> TRSGlobalAnim;
+
+	void Init();
 };

@@ -17,6 +17,7 @@
 #include "Quaternion.h" // include Mat4.h which include Vector3.h
 #include "Referential.h"
 #include "Skeleton.h"
+#include "Animation.h"
 #include "Bone.h"
 
 

@@ -22,8 +22,11 @@ class CSimulation : public ISimulation
 		printf("Anim key count : %ld\n", keyCount);
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
 
-		skel = new Skeleton();
-		skel->Set();
+		//skel = new Skeleton();
+		//skel->Set();
+
+		anim = new Animation();
+		anim->Init();
 	}
 
 	virtual void Update(float frameTime) override
@@ -37,11 +40,14 @@ class CSimulation : public ISimulation
 		// Z axis
 		DrawLine(0, 0, 0, 0, 0, 100, 10, 0, 1);
 
+		//Animation
+		anim->Update(frameTime);
+
 		// Skeleton
 		//SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
-		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.0005f);
+		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.00025f);
 		//skel->animSkel(frameTime);
-		skel->Draw();
+		//skel->Draw();
 	}
 };
 
@@ -50,7 +56,7 @@ int main()
 	CSimulation simulation;
 	Run(&simulation, 1400, 800);
 
-	delete simulation.skel;
+	delete simulation.anim;
 	
 	return 0;
 }
