@@ -5,16 +5,6 @@
 
 vec3 Bone::locToGlobVec(const vec3& myVec) const
 {
-	/*if (parent)
-	{
-		Referential refParent = { parent->pos, parent->rot };
-
-		vec3 posRelativeToParent = refParent.locToGlobPos(myVec);
-
-		return posRelativeToParent;
-	}
-
-	return myVec;*/
 	return matrixToPosition(GetGlobalModel());
 }
 
@@ -28,25 +18,22 @@ quat Bone::locToGlobQuat(const quat& myQuat) const
 
 mat4 Bone::GetMatrix(const std::vector<std::shared_ptr<Bone>>& bones, const std::vector<std::shared_ptr<Bone>>& bones_base)
 {
-	//vec3 rotDiff = quaternionToEuler(bones_base[index]->rot) - quaternionToEuler(bones[index]->rot);
-	//vec3 posDiff = bones_base[index]->pos - bones[index]->pos;
-
 	mat4 TRSLocalBase = bones_base[index]->GetLocalModel();
 
-	// global
 	mat4 TRSGlobalBase = bones_base[index]->GetGlobalModel();
 
-	//if (parent)
-		//globalAnimModel = parent->globalAnimModel * globalAnimModel;
+	mat4 TRSLocalAnim = bones[index]->GetLocalModel();
 
-	// Real Reaturn = parent.globalanim * (TRSLocalBase * localAnim * matInvert(TRSGlobalBase));
-	//return parentGlobalAnim * (TRSLocalBase * localAnim * matInvert(TRSGlobalBase));
-	//globalanim = TRSLocalBase * localAnim;
+	mat4 TRSGlobalAnim = bones[index]->GetGlobalModel();
 
-	//return bones[index].globalAnimModel * matInvert(TRSGlobalBase); // * localAnim
-	//return TRSGlobalBase * matInvert(TRSGlobalBase);
-	//return TRSLocalBase * matInvert(TRSGlobalBase);
-	return TRSLocalBase * matInvert(TRSLocalBase);
+	mat4 TRSParentGlobalAnim = {};
+
+	if (parent)
+		TRSParentGlobalAnim = bones[parent->index]->GetGlobalModel();
+
+	// Real Return = parent.globalanim * (TRSLocalBase * localAnim * matInvert(TRSGlobalBase));
+	return TRSParentGlobalAnim * (TRSLocalBase * TRSLocalAnim * matInvert(TRSGlobalBase));
+	//TRSGlobalAnim = TRSLocalBase * TRSLocalAnim;
 }
 
 mat4 Bone::GetLocalModel() const

@@ -22,9 +22,6 @@ class CSimulation : public ISimulation
 		printf("Anim key count : %ld\n", keyCount);
 		printf("Anim key : pos(%.2f,%.2f,%.2f) rotation quat(%.10f,%.10f,%.10f,%.10f)\n\n", posX, posY, posZ, quatW, quatX, quatY, quatZ);
 
-		//skel = new Skeleton();
-		//skel->Set();
-
 		anim = new Animation();
 		anim->Init();
 	}
@@ -42,12 +39,6 @@ class CSimulation : public ISimulation
 
 		//Animation
 		anim->Update(frameTime);
-
-		// Skeleton
-		//SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
-		//skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.00025f);
-		//skel->animSkel(frameTime);
-		//skel->Draw();
 	}
 };
 

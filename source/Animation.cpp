@@ -5,31 +5,25 @@
 
 Animation::Animation()
 {
-	skel = &Skeleton();
+	skel = new Skeleton();
 }
 
-// le nouveau nom du set
 void Animation::Init()
 {
-	const char* animName = "ThirdPersonWalk.anim";
-	static int currKeyFrame = 0;
-
-	quat tempRot = {};
-	vec3 tempPos = {};
+	skel->Init();
 
 	for (int i = 0; i < GetSkeletonBoneCount() - 7; i++) // - 7 to remove IK
 	{
-		GetAnimLocalBoneTransform(animName, i, currKeyFrame % GetAnimKeyCount(animName), tempPos.x, tempPos.y, tempPos.z, tempRot.w, tempRot.x, tempRot.y, tempRot.z);
-		++currKeyFrame;
-		localRotDiff.push_back(tempRot);
-		localPosDiff.push_back(tempPos);
+		Bone& currentBone = *skel->bones[i].get();
+		GetAnimLocalBoneTransform(animName, i, i % GetAnimKeyCount(animName), currentBone.pos.x, currentBone.pos.y, currentBone.pos.z,
+																	currentBone.rot.w, currentBone.rot.x, currentBone.rot.y, currentBone.rot.z);
 	}
-
-	skel->Init();
 }
 
-void Animation::Update(float frameTime)
+void Animation::Update(const float& frameTime)
 {
-	//SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
-	//skel->animSkel(frameTime);
+	SetSkinningPose(skel->GetBonesMatrix(), size_t(skel->GetBonesNumber()));
+	//skel->animSkel(frameTime, animName);
+	skel->MoveBone(52, { 0.f, 1.f, 0.f, 0.f }, 0.0005f);
+	skel->Draw();
 }

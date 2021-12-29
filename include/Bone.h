@@ -17,12 +17,6 @@ public:
 	vec3 pos = {};
 	quat rot = {};
 
-	// truc de gros sale
-	mat4 localAnimModel = {};
-	mat4 globalAnimModel = {};
-	vec3 currAnimPos = {};
-	quat currAnimRot = {};
-
 	vec3 locToGlobVec(const vec3& myVec) const;
 	quat locToGlobQuat(const quat& myQuat) const;
 
