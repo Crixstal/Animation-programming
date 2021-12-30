@@ -23,14 +23,17 @@ void Skeleton::Init()
 
 		printf("bone %d name: %s\n", currentBone.index, currentBone.name);
 	}
+
+	for (auto& bone : bones_base)
+		bones_anim.push_back(std::make_shared<Bone>(*bone.get()));
 }
 
 void Skeleton::Draw()
 {
-	for (int i = 2; i < bones_base.size() - 1; i++)
+	for (int i = 2; i < bones_anim.size() - 1; i++)
 	{
-		vec3 joint1 = bones_base[i]->locToGlobVec(bones_base[i]->pos);
-		vec3 joint2 = bones_base[i]->parent->locToGlobVec(bones_base[i]->parent->pos);
+		vec3 joint1 = bones_anim[i]->locToGlobVec(bones_anim[i]->pos);
+		vec3 joint2 = bones_anim[i]->parent->locToGlobVec(bones_anim[i]->parent->pos);
 
 		DrawLine(joint1.x, joint1.y + offset, joint1.z,
 				 joint2.x, joint2.y + offset, joint2.z,
@@ -46,7 +49,7 @@ void Skeleton::MoveBone(const int indexBone, const quat& rotation, const float& 
 	bones_base[indexBone]->rot = quatSlerp(bones_base[indexBone]->rot, bones_base[indexBone]->rot * rotation, speed);
 }
 
-const float* Skeleton::GetBonesMatrix(const std::vector<std::vector<std::shared_ptr<Bone>>>& animTransforms)
+const float* Skeleton::GetBonesMatrix(const std::vector<std::shared_ptr<Bone>>& animTransforms)
 {
 	float* matrix = new float[(bones_base.size()) * sizeof(Bone)];
 
@@ -56,32 +59,17 @@ const float* Skeleton::GetBonesMatrix(const std::vector<std::vector<std::shared_
 	return matrix;
 }
 
-const void Skeleton::animSkel(const float& frameTime, const char* animName)
+const void Skeleton::animSkel(const char* animName, const int currKeyFrame, const float& alpha, const std::vector<std::shared_ptr<Bone>>& currAnim, const std::vector<std::shared_ptr<Bone>>& nextAnim)
 {
-	quat currRotDiff = {};
-	quat nextRotDiff = {};
-	vec3 currPosDiff = {};
-	vec3 nextPosDiff = {};
-
-	static int currKeyFrame = 0;
-	static float timer = 0.f;
-	timer += frameTime;
-	const static float timerBetweenFrame = 0.05f;
-
-	if (timer >= timerBetweenFrame)
+	for (auto& bone : bones_anim)
 	{
-		++currKeyFrame;
-		timer = 0.f;
-	}
+		GetAnimLocalBoneTransform(animName, bone->index, currKeyFrame % GetAnimKeyCount(animName), currAnim[bone->index]->pos.x, currAnim[bone->index]->pos.y, currAnim[bone->index]->pos.z,
+									currAnim[bone->index]->rot.w, currAnim[bone->index]->rot.x, currAnim[bone->index]->rot.y, currAnim[bone->index]->rot.z);
+		
+		GetAnimLocalBoneTransform(animName, bone->index, (currKeyFrame + 1) % GetAnimKeyCount(animName), nextAnim[bone->index]->pos.x, nextAnim[bone->index]->pos.y, nextAnim[bone->index]->pos.z,
+									nextAnim[bone->index]->rot.w, nextAnim[bone->index]->rot.x, nextAnim[bone->index]->rot.y, nextAnim[bone->index]->rot.z);
 
-	float newTimer = timer / timerBetweenFrame;
-
-	for (auto& bone : bones_base)
-	{
-		GetAnimLocalBoneTransform(animName, bone->index, currKeyFrame % GetAnimKeyCount(animName), currPosDiff.x, currPosDiff.y, currPosDiff.z, currRotDiff.w, currRotDiff.x, currRotDiff.y, currRotDiff.z);
-		GetAnimLocalBoneTransform(animName, bone->index, (currKeyFrame + 1) % GetAnimKeyCount(animName), nextPosDiff.x, nextPosDiff.y, nextPosDiff.z, nextRotDiff.w, nextRotDiff.x, nextRotDiff.y, nextRotDiff.z);
-
-		bone->pos = bones_base[bone->index]->pos + lerp(currPosDiff, nextPosDiff, newTimer);
-		bone->rot = bones_base[bone->index]->rot * quatSlerp(currRotDiff, nextRotDiff, newTimer);
+		bone->pos = bones_anim[bone->index]->pos + lerp(currAnim[bone->index]->pos, nextAnim[bone->index]->pos, alpha);
+		bone->rot = bones_anim[bone->index]->rot * quatSlerp(currAnim[bone->index]->rot, nextAnim[bone->index]->rot, alpha);
 	}
 }
