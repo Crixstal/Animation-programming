@@ -23,9 +23,6 @@ void Skeleton::Init()
 
 		printf("bone %d name: %s\n", currentBone.index, currentBone.name);
 	}
-
-	for (auto& bone : bones_base)
-		bones.push_back(std::make_shared<Bone>(*bone.get()));
 }
 
 void Skeleton::Draw()
@@ -49,12 +46,12 @@ void Skeleton::MoveBone(const int indexBone, const quat& rotation, const float& 
 	bones_base[indexBone]->rot = quatSlerp(bones_base[indexBone]->rot, bones_base[indexBone]->rot * rotation, speed);
 }
 
-const float* Skeleton::GetBonesMatrix()
+const float* Skeleton::GetBonesMatrix(const std::vector<std::vector<std::shared_ptr<Bone>>>& animTransforms)
 {
 	float* matrix = new float[(bones_base.size()) * sizeof(Bone)];
 
 	for (int i = 0; i < bones_base.size(); i++)
-		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones_base[i]->GetMatrix(bones, bones_base).e, sizeof(mat4));
+		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones_base[i]->GetMatrix(animTransforms, bones_base).e, sizeof(mat4));
 
 	return matrix;
 }

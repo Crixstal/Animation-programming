@@ -15,7 +15,9 @@ public:
 
 	void Init();
 	void Update(const float& frameTime);
-	
+
+	std::vector<std::vector<std::shared_ptr<Bone>>> animTransforms;
+
 private:
 	const char* animName = "ThirdPersonWalk.anim";
 	Skeleton* skel = nullptr;

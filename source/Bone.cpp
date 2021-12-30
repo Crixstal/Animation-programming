@@ -16,24 +16,23 @@ quat Bone::locToGlobQuat(const quat& myQuat) const
 	return myQuat;
 }
 
-mat4 Bone::GetMatrix(const std::vector<std::shared_ptr<Bone>>& bones, const std::vector<std::shared_ptr<Bone>>& bones_base)
+mat4 Bone::GetMatrix(const std::vector<std::vector<std::shared_ptr<Bone>>>& animTransforms, const std::vector<std::shared_ptr<Bone>>& bones_base)
 {
 	mat4 TRSLocalBase = bones_base[index]->GetLocalModel();
 
 	mat4 TRSGlobalBase = bones_base[index]->GetGlobalModel();
 
-	mat4 TRSLocalAnim = bones[index]->GetLocalModel();
+	// keyframe syst -> first []
+	mat4 TRSLocalAnim = animTransforms[21][index]->GetLocalModel();
 
-	mat4 TRSGlobalAnim = bones[index]->GetGlobalModel();
-
-	mat4 TRSParentGlobalAnim = {};
-
+	globalAnimModel = TRSLocalBase * TRSLocalAnim;
+	
 	if (parent)
-		TRSParentGlobalAnim = bones[parent->index]->GetGlobalModel();
+		globalAnimModel = parent->globalAnimModel * globalAnimModel;
+	
+	return globalAnimModel * matInvert(TRSGlobalBase);
 
-	// Real Return = parent.globalanim * (TRSLocalBase * localAnim * matInvert(TRSGlobalBase));
-	return TRSParentGlobalAnim * (TRSLocalBase * TRSLocalAnim * matInvert(TRSGlobalBase));
-	//TRSGlobalAnim = TRSLocalBase * TRSLocalAnim;
+	//apply calc to skel
 }
 
 mat4 Bone::GetLocalModel() const
