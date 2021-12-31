@@ -32,11 +32,18 @@ uniform SkinningMatrices
 void main(void)
 {
 	mat4 mvp = sm.projectionMatrix * modelViewMatrix;
+	
+	mat4 localPosMat = boneWeights[0] * skin.mat[int(boneIndices[0])] +
+					   boneWeights[1] * skin.mat[int(boneIndices[1])] +
+					   boneWeights[2] * skin.mat[int(boneIndices[2])] +
+					   boneWeights[3] * skin.mat[int(boneIndices[3])];
 
-	vec4 localPos = skin.mat[int(boneIndices[0])] * vec4(inputPosition, 1.0f);
+	vec4 localPos = localPosMat * vec4(inputPosition, 1.0f);
+
 	gl_Position = mvp * localPos;
 	// on applique uniquement la rotation aux normales (pas de translation ni de scale)
 	vec3 localNormal = mat3(skin.mat[int(boneIndices[0])]) * normal;
+
 	outNormal = mat3(mvp) * localNormal;
 
 	outNormal = normalize(outNormal);

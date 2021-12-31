@@ -12,9 +12,9 @@ public:
 
 	void Init();
 	void Draw();
-	void MoveBone(const int indexBone, const quat& rotation, const float& speed);
+	void MoveBone(const int indexBone, const quat& rotation, const float& translation, const float& speed);
 	const float* GetBonesMatrix(const std::vector<std::shared_ptr<Bone>>& animTransforms);
-	const void animSkel(const char* animName, const int currKeyFrame, const float& alpha, const std::vector<std::shared_ptr<Bone>>& currAnim, const std::vector<std::shared_ptr<Bone>>& nextAnim);
+	const void animSkel(const float& speed, const std::vector<std::shared_ptr<Bone>>& currAnim, const std::vector<std::shared_ptr<Bone>>& nextAnim);
 
 	const int GetBonesNumber() { return bones_base.size(); };
 

@@ -21,7 +21,7 @@ public:
 	int currKeyFrame = 0;
 	float timer = 0.f;
 	const float timerBetweenFrame = 0.0375f;
-	float alpha = 0.f;
+	float speed = 0.f;
 
 private:
 	const char* animName = "ThirdPersonWalk.anim";

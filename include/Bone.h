@@ -18,12 +18,12 @@ public:
 	vec3 pos = {};
 	quat rot = quatIdentity();
 
-	mat4 globalAnimModel = matIdentity();
+	mat4 TRSGlobalAnim = matIdentity();
 
-	vec3 locToGlobVec(const vec3& myVec) const;
-	quat locToGlobQuat(const quat& myQuat) const;
+	vec3 locToGlobVec() const;
+	quat locToGlobQuat() const;
 
-	mat4 GetMatrix(const std::vector<std::shared_ptr<Bone>>& animTransforms, const std::vector<std::shared_ptr<Bone>>& bones_base);
+	mat4 GetMatrix(const std::vector<std::shared_ptr<Bone>>& animTransforms);
 	mat4 GetLocalModel() const;
 	mat4 GetGlobalModel() const;
 };

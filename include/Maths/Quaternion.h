@@ -236,7 +236,7 @@ inline quat quatNlerp(const quat& q1, const quat& q2, const float& amount)
     return quatNormalize(result);
 }
 
-inline float FloatSelect(float Comparand, float ValueGEZero, float ValueLTZero)
+inline float FloatSelect(const float& Comparand, const float& ValueGEZero, const float& ValueLTZero)
 {
     if (Comparand >= 0.f)
         return ValueGEZero;
@@ -245,7 +245,7 @@ inline float FloatSelect(float Comparand, float ValueGEZero, float ValueLTZero)
 }
 
 // Calculates spherical linear interpolation between two quaternions
-inline quat quatSlerp(const quat& Quat1, const quat& Quat2, float amount)
+inline quat quatSlerp(const quat& Quat1, const quat& Quat2, const float& amount)
 {
     // Get cosine of angle between quats.
     const float RawCosom =
