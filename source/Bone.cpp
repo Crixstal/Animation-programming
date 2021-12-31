@@ -25,7 +25,7 @@ mat4 Bone::GetMatrix(const std::vector<std::shared_ptr<Bone>>& animTransforms)
 	mat4 TRSLocalAnim = animTransforms[index]->GetLocalModel();
 
 	TRSGlobalAnim = TRSLocalBase * TRSLocalAnim;
-
+	
 	if (parent)
 		TRSGlobalAnim = parent->TRSGlobalAnim * TRSGlobalAnim;
 

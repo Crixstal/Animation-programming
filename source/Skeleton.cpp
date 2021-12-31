@@ -7,24 +7,24 @@ void Skeleton::Init()
 {
 	for (int i = 0; i < GetSkeletonBoneCount() - 7; i++) // - 7 to remove IK
 	{
-		bones_base.push_back(std::make_shared<Bone>());
+		bones_anim.push_back(std::make_shared<Bone>());
 
-		bones_base[i]->name = GetSkeletonBoneName(i);
-		bones_base[i]->index = i;
+		bones_anim[i]->name = GetSkeletonBoneName(i);
+		bones_anim[i]->index = i;
 
 		if (GetSkeletonBoneParentIndex(i) == -1)
-			bones_base[i]->parent = nullptr;
+			bones_anim[i]->parent = nullptr;
 		else
-			bones_base[i]->parent = bones_base[GetSkeletonBoneParentIndex(i)].get();
+			bones_anim[i]->parent = bones_anim[GetSkeletonBoneParentIndex(i)].get();
 
-		GetSkeletonBoneLocalBindTransform(i, bones_base[i]->pos.x, bones_base[i]->pos.y, bones_base[i]->pos.z,
-								bones_base[i]->rot.w, bones_base[i]->rot.x, bones_base[i]->rot.y, bones_base[i]->rot.z);
+		GetSkeletonBoneLocalBindTransform(i, bones_anim[i]->pos.x, bones_anim[i]->pos.y, bones_anim[i]->pos.z,
+								bones_anim[i]->rot.w, bones_anim[i]->rot.x, bones_anim[i]->rot.y, bones_anim[i]->rot.z);
 
-		printf("bone %d name: %s\n", bones_base[i]->index, bones_base[i]->name);
+		printf("bone %d name: %s\n", bones_anim[i]->index, bones_anim[i]->name);
 	}
 
-	for (auto& bone : bones_base)
-		bones_anim.push_back(std::make_shared<Bone>(*bone.get()));
+	for (auto& bone : bones_anim)
+		bones_base.push_back(std::make_shared<Bone>(*bone.get()));
 }
 
 void Skeleton::Draw()
@@ -45,7 +45,7 @@ void Skeleton::MoveBone(const int indexBone, const quat& rotation, const float& 
 	if (indexBone < 0 || indexBone > GetBonesNumber())
 		return;
 
-	bones_base[indexBone]->rot = quatSlerp(bones_base[indexBone]->rot, bones_base[indexBone]->rot * rotation, speed); // fonctionne que si bones_base
+	bones_anim[indexBone]->rot = quatSlerp(bones_anim[indexBone]->rot, bones_anim[indexBone]->rot * rotation, speed);
 	//bones_anim[indexBone]->pos = lerp(bones_anim[indexBone]->pos, bones_anim[indexBone]->pos + translation, speed);
 }
 
@@ -54,7 +54,7 @@ const float* Skeleton::GetBonesMatrix(const std::vector<std::shared_ptr<Bone>>& 
 	float* matrix = new float[(GetBonesNumber()) * sizeof(Bone)];
 
 	for (int i = 0; i < GetBonesNumber(); i++)
-		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones_base[i]->GetMatrix(animTransforms).e, sizeof(mat4));
+		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], bones_anim[i]->GetMatrix(animTransforms).e, sizeof(mat4));
 
 	return matrix;
 }
