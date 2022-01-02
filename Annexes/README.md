@@ -1,4 +1,4 @@
-# **Animation Programming**
+# **Animation Programming by FEON**
 
 ## **Summary**
 - [Description](##Description)
@@ -17,7 +17,8 @@ The project objective is to understand the basics of animation through the Unrea
 
 ## **Informations**
 
-The engine used can cause data races, therefore the mesh sometimes doesn't appear or is black. Just restart the application until the mesh is displayed.
+The engine used can cause data races, therefore the mesh sometimes doesn't appear or is black. Just restart the application until the mesh is displayed.  
+The program runs in x86, Debug and Release.
 
 <br>
 
@@ -33,13 +34,15 @@ Done
 
 In progress
 ---
-- transition between walking / running animations (crossfade AKA blending)
+- smooth transition between walking / running animations (crossfade AKA blending)
 
 <br>
 
 ## **Difficulties**
 
-
+- we had some problems with the maths, the functions for the matrices were not all for the same format, we use matrices in line
+- building the architecture of the program was quite complicated
+- working during the holidays is difficult: we were not necessarily available and did not always have access to good equipment / a good connection
 
 <br>
 
