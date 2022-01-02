@@ -38,7 +38,7 @@ void Skeleton::MoveBone(const int indexBone, const quat& rotation, const float& 
 
 const float* Skeleton::GetBonesMatrix(const std::vector<std::shared_ptr<Bone>>& animTransforms)
 {
-	float* matrix = new float[(GetBonesNumber()) * sizeof(Bone)];
+	matrix = new float[(GetBonesNumber()) * sizeof(Bone)];
 
 	for (int i = 0; i < GetBonesNumber(); i++)
 		memcpy(&matrix[i * (sizeof(mat4) / sizeof(float))], skeleton[i]->GetMatrix(animTransforms).e, sizeof(mat4));

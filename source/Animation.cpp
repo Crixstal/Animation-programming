@@ -12,12 +12,20 @@ void Animation::Init()
 {
 	skel->Init();
 
-	keyFrameNumber = GetAnimKeyCount(animName);
+	LoadAnimation();
+}
+
+void Animation::LoadAnimation()
+{
+	keyFrameNumber = GetAnimKeyCount(animName[currentAnimation]);
+
+	//clear animTransforms
+	animTransforms.clear();
 
 	for (int i = 0; i < keyFrameNumber; ++i)
 	{
 		animTransforms.push_back(std::vector<std::shared_ptr<Bone>>());
-		
+
 		for (int j = 0; j < skel->GetBonesNumber(); ++j)
 		{
 			animTransforms[i].push_back(std::make_shared<Bone>());
@@ -30,11 +38,12 @@ void Animation::Init()
 			else
 				animTransforms[i][j]->parent = animTransforms[i][GetSkeletonBoneParentIndex(j)].get();
 
-			GetAnimLocalBoneTransform(animName, j, i, animTransforms[i][j]->pos.x, animTransforms[i][j]->pos.y, animTransforms[i][j]->pos.z,
-						animTransforms[i][j]->rot.w, animTransforms[i][j]->rot.x, animTransforms[i][j]->rot.y, animTransforms[i][j]->rot.z);
+			GetAnimLocalBoneTransform(animName[currentAnimation], j, i, animTransforms[i][j]->pos.x, animTransforms[i][j]->pos.y, animTransforms[i][j]->pos.z,
+				animTransforms[i][j]->rot.w, animTransforms[i][j]->rot.x, animTransforms[i][j]->rot.y, animTransforms[i][j]->rot.z);
 		}
 	}
 }
+
 
 void Animation::Update(const float& frameTime)
 {
@@ -44,6 +53,17 @@ void Animation::Update(const float& frameTime)
 	{
 		++currKeyFrame;
 		timer = 0.f;
+		if (currKeyFrame == GetAnimKeyCount(animName[currentAnimation]))
+		{
+			currKeyFrame = 0;
+			
+			if (currentAnimation == 0)
+				currentAnimation = 1;
+			else
+				currentAnimation = 0;
+
+			LoadAnimation();
+		}
 	}
 
 	alpha = timer / timerBetweenFrame;

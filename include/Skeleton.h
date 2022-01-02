@@ -8,7 +8,7 @@ class Skeleton
 {
 public:
 	Skeleton() {}
-	~Skeleton() {}
+	~Skeleton() { delete matrix; }
 
 	void Init();
 
@@ -28,4 +28,6 @@ private:
 	std::vector<quat> rotBindPose;
 
 	float offset = -100.f;
+
+	float* matrix;
 };
