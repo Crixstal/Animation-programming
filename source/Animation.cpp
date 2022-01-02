@@ -48,6 +48,9 @@ void Animation::Update(const float& frameTime)
 
 	alpha = timer / timerBetweenFrame;
 
-	skel->Draw(alpha, animTransforms[currKeyFrame % keyFrameNumber], animTransforms[(currKeyFrame + 1) % keyFrameNumber]);
+	// comment DrawWithAnim and uncomment Draw to see the skel in T-pose
+	//skel->Draw();
+	skel->DrawWithAnim(alpha, animTransforms[currKeyFrame % keyFrameNumber], animTransforms[(currKeyFrame + 1) % keyFrameNumber]);
+
 	SetSkinningPose(skel->GetBonesMatrix(animTransforms[currKeyFrame % keyFrameNumber]), size_t(skel->GetBonesNumber()));
 }

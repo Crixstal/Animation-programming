@@ -20,6 +20,9 @@ void Skeleton::Init()
 		GetSkeletonBoneLocalBindTransform(i, skeleton[i]->pos.x, skeleton[i]->pos.y, skeleton[i]->pos.z,
 			skeleton[i]->rot.w, skeleton[i]->rot.x, skeleton[i]->rot.y, skeleton[i]->rot.z);
 
+		posBindPose.push_back(skeleton[i]->pos);
+		rotBindPose.push_back(skeleton[i]->rot);
+
 		printf("bone %d name: %s\n", skeleton[i]->index, skeleton[i]->name);
 	}
 }
@@ -43,33 +46,37 @@ const float* Skeleton::GetBonesMatrix(const std::vector<std::shared_ptr<Bone>>& 
 	return matrix;
 }
 
-const void Skeleton::Draw(const float& alpha, const std::vector<std::shared_ptr<Bone>>& currAnim, const std::vector<std::shared_ptr<Bone>>& nextAnim)
+const void Skeleton::DrawWithAnim(const float& alpha, const std::vector<std::shared_ptr<Bone>>& currAnim, const std::vector<std::shared_ptr<Bone>>& nextAnim)
 {
-	std::vector<vec3> tempPos;
-	std::vector<quat> tempRot;
-
 	for (auto& bone : skeleton)
 	{
-		tempPos.push_back(bone->pos);
-		tempRot.push_back(bone->rot);
-
 		bone->pos += lerp(currAnim[bone->index]->pos, nextAnim[bone->index]->pos, alpha);
 		bone->rot *= quatSlerp(currAnim[bone->index]->rot, nextAnim[bone->index]->rot, alpha);
 	}
 
+	Draw();
+
+	ResetSkeleton();
+}
+
+const void Skeleton::Draw()
+{
 	for (int i = 2; i < GetBonesNumber(); i++)
 	{
 		vec3 joint1 = skeleton[i]->locToGlobVec();
 		vec3 joint2 = skeleton[i]->parent->locToGlobVec();
-	
+
 		DrawLine(joint1.x, joint1.y + offset, joint1.z,
 				 joint2.x, joint2.y + offset, joint2.z,
 				 0.f, 0.f, 1.f);
 	}
+}
 
+const void Skeleton::ResetSkeleton()
+{
 	for (auto& bone : skeleton)
 	{
-		bone->pos = tempPos[bone->index];
-		bone->rot = tempRot[bone->index];
+		bone->pos = posBindPose[bone->index];
+		bone->rot = rotBindPose[bone->index];
 	}
 }
