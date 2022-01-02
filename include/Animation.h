@@ -16,14 +16,14 @@ public:
 	void Init();
 	void Update(const float& frameTime);
 
+private:
 	std::vector<std::vector<std::shared_ptr<Bone>>> animTransforms;
 	unsigned int keyFrameNumber = 0;
 	int currKeyFrame = 0;
 	float timer = 0.f;
 	const float timerBetweenFrame = 0.0375f;
-	float speed = 0.f;
+	float alpha = 0.f;
 
-private:
 	const char* animName = "ThirdPersonWalk.anim";
 	Skeleton* skel = nullptr;
 };

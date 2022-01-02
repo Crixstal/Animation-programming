@@ -17,7 +17,7 @@ The project objective is to understand the basics of animation through the Unrea
 
 ## **Informations**
 
-The engine used can cause data races, therefore the mesh sometimes doesn't appear. Just restart the application until the mesh is displayed.
+The engine used can cause data races, therefore the mesh sometimes doesn't appear or is black. Just restart the application until the mesh is displayed.
 
 <br>
 
@@ -26,14 +26,13 @@ The engine used can cause data races, therefore the mesh sometimes doesn't appea
 Done
 ---
 - skeleton / mesh draw in T-Pose
-- mesh draw when running / walking
+- skeleton / mesh draw when running / walking
 - slerp between animation's frames to smooth
 
 <br>
 
 In progress
 ---
-- skeleton draw when running / walking
 - transition between walking / running animations (crossfade AKA blending)
 
 <br>

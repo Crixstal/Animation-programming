@@ -2,7 +2,7 @@
 
 #include "Definitions.h"
 
-#include "Mat4.h" //  already include Vector3.h
+#include "Mat4.h" // already include Vector3.h
 
 
 inline quat operator+(const quat& q1, const quat& q2)
@@ -54,7 +54,7 @@ inline quat operator*(const quat& q1, const quat& q2)
 }
 inline quat operator*(const quat& q, const float& k)
 {
-    quat result = { 0 };
+    quat result = {};
 
     float qax = q.x, qay = q.y, qaz = q.z, qaw = q.w;
 
@@ -63,16 +63,6 @@ inline quat operator*(const quat& q, const float& k)
         qay * k + qaw * k + qaz * k - qax * k,
         qaz * k + qaw * k + qax * k - qay * k,
         qaw * k - qax * k - qay * k - qaz * k
-    };
-}
-
-inline quat operator/(const quat& q1, const quat& q2)
-{
-    return {
-        q1.x / q2.x,
-        q1.y / q2.y,
-        q1.z / q2.z,
-        q1.w / q2.w
     };
 }
 

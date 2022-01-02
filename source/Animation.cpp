@@ -46,10 +46,8 @@ void Animation::Update(const float& frameTime)
 		timer = 0.f;
 	}
 
-	speed = timer / timerBetweenFrame;
+	alpha = timer / timerBetweenFrame;
 
-	//skel->MoveBone(1, { 0.f, 1.f, 0.f, 0.f }, 100.f, 0.0005f);
-	skel->animSkel(speed, animTransforms[currKeyFrame % keyFrameNumber], animTransforms[(currKeyFrame + 1) % keyFrameNumber]);
-	skel->Draw();
+	skel->Draw(alpha, animTransforms[currKeyFrame % keyFrameNumber], animTransforms[(currKeyFrame + 1) % keyFrameNumber]);
 	SetSkinningPose(skel->GetBonesMatrix(animTransforms[currKeyFrame % keyFrameNumber]), size_t(skel->GetBonesNumber()));
 }

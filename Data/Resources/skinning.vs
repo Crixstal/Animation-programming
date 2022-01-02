@@ -41,10 +41,10 @@ void main(void)
 	vec4 localPos = localPosMat * vec4(inputPosition, 1.0f);
 
 	gl_Position = mvp * localPos;
+
 	// on applique uniquement la rotation aux normales (pas de translation ni de scale)
 	vec3 localNormal = mat3(skin.mat[int(boneIndices[0])]) * normal;
 
 	outNormal = mat3(mvp) * localNormal;
-
 	outNormal = normalize(outNormal);
 }

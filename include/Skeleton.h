@@ -11,14 +11,14 @@ public:
 	~Skeleton() {}
 
 	void Init();
-	void Draw();
+
 	void MoveBone(const int indexBone, const quat& rotation, const float& translation, const float& speed);
 	const float* GetBonesMatrix(const std::vector<std::shared_ptr<Bone>>& animTransforms);
-	const void animSkel(const float& speed, const std::vector<std::shared_ptr<Bone>>& currAnim, const std::vector<std::shared_ptr<Bone>>& nextAnim);
+	const void Draw(const float& alpha, const std::vector<std::shared_ptr<Bone>>& currAnim, const std::vector<std::shared_ptr<Bone>>& nextAnim);
 
-	const int GetBonesNumber() { return bones_base.size(); };
+	const int GetBonesNumber() { return skeleton.size(); };
 
-	std::vector<std::shared_ptr<Bone>> bones_base; // always in T-pose
-	std::vector<std::shared_ptr<Bone>> bones_anim;
+private:
+	std::vector<std::shared_ptr<Bone>> skeleton;
 	float offset = -100.f;
 };

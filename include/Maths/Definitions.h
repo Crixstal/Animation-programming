@@ -111,4 +111,7 @@ vec2 operator*(const T& scale, const vec2& vec)
 }
 
 template<typename T>
-T lerp(const T& a, const T& b, float factor) { return a + (b - a) * factor; }
+T lerp(const T& a, const T& b, float factor)
+{ 
+    return a + (b - a) * factor;
+}
