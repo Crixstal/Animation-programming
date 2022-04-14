@@ -1,17 +1,10 @@
 # **Animation Programming by FEON**
 
 ## **Summary**
-- [Description](##Description)
-- [Informations](##Informations)
-- [Work](##Work)
-- [Difficulties](##Difficulties)
-- [References](##References)
-
-<br>
-
-## **Description**
-
-The project objective is to understand the basics of animation through the Unreal base model.
+- [Informations](#Informations)
+- [Work](#Work)
+- [Difficulties](#Difficulties)
+- [References](#References)
 
 <br>
 
