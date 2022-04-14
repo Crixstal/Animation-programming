@@ -1,4 +1,4 @@
-# **Animation Programming by FEON**
+# **Animation Programming**
 
 ## **Summary**
 - [Informations](#Informations)
